@@ -1,0 +1,684 @@
+@charset "utf-8";
+/* =================================================================
+   Alejandra Chevey — portfolio
+   Static rebuild (plain HTML + CSS, no JS / animations / VR).
+   Reconstructed from the original Hugo + Toolbox (Bootstrap 4 alpha)
+   source. Colours, grid, type scale and component layout preserved.
+   ================================================================= */
+
+/* ----------------------------------------------------------------
+   Design tokens (from the original config/variables.scss)
+   ---------------------------------------------------------------- */
+:root {
+  /* — Color — type is always black; no accent colours in use — */
+  --black: #000;
+  --white: #fff;
+  --placeholder: #C8C1F7;  /* image / hero placeholders (lilac) */
+  --shadow: rgba(0, 0, 0, .35);  /* hero title text-shadow */
+
+  /* — Project tile colours (from the Figma card set) — */
+  --tile-summer: #00b478;  /* green */
+  --tile-meet:   #ff9bd7;  /* pink */
+  --tile-mail:   #9b47ff;
+  --tile-paris:  #ffd700;
+  --tile-wallet: #ff0000;  /* red */
+  --tile-pass:   #4141ff;  /* blue */
+
+  /* — Layout & space — */
+  --gutter: 20px;          /* $grid-gutter-width-base */
+  --gutter-half: 10px;
+  --nav-mobile-h: 56px;    /* height of the mobile top nav bar */
+  --bleed: 135%;           /* width of images that overflow toward the menu */
+
+  /* — Fluid type — every responsive clamp lives here, nowhere else.
+     Each is min / preferred (viewport-based) / max. To retune the whole
+     site's scale edit --fs-root; the rest are bespoke display sizes. */
+  --fs-root: clamp(28px, 2.8vw + 16px, 48px);  /* engine: drives every rem-based size */
+  --fs-hero: clamp(56px, 12vw, 176px);         /* case-study hero title */
+  --fs-nav-mobile: clamp(13px, 4.4vw, 22px);   /* nav links + logo on phones */
+
+  /* — Type scale — rem, so each step tracks the fluid --fs-root.
+     px ranges are phone (root 28px) → desktop (root 48px). */
+  --text-2xs:  .5rem;    /* 14 → 24px */
+  --text-xs:   .7rem;    /* 19.6 → 33.6px */
+  --text-sm:   .8rem;    /* 22.4 → 38.4px — nav/logo, tablet */
+  --text-base: 1rem;     /* 28 → 48px — body default */
+  --text-lg:   1.3rem;   /* 36.4 → 62.4px — mobile brand */
+  --text-xl:   2rem;     /* 56 → 96px */
+  --text-2xl:  4rem;     /* 112 → 192px */
+
+  --weight-black: 900;   /* the single weight used everywhere */
+
+  /* leading (line-height, unitless). The per-element optical values
+     .88/.92/.94/.9 on big display type stay inline by design. */
+  --leading-tight: 1.0;  /* headings + small display */
+  --leading-base:  1.0;  /* body */
+  --leading-loose: 1.08; /* paragraphs */
+
+  /* tracking (letter-spacing, em). --tracking-base tightens all running
+     text; the numbered ones go tighter on bigger display type. */
+  --tracking-base: -.02em; /* body, paragraphs, nav, cards, headings */
+  --tracking-1: -.01em;  /* logo */
+  --tracking-2: -.03em;  /* display-2 + hero title */
+  --tracking-3: -.035em; /* display-1 */
+
+  /* — Ratios — */
+  --ratio-portrait: 3 / 4;   /* cards + case-study images */
+  --ratio-landscape: 7 / 5;  /* image-discover offset image */
+
+  /* — Motion — */
+  --dur-fast: .3s;   /* card hover-shadow fade */
+  --mov-speed: 4s;       /* Mov letter morph loop (plays while hovered) */
+  --mov-ease-back: .6s;  /* Mov letter ease back to rest after hover */
+
+  /* — Elevation (z-index scale) — */
+  --z-base: 1;      /* hero image / discover content */
+  --z-raised: 3;    /* hero title + scroll cue, above the image */
+  --z-nav: 1070;    /* side nav, above bleeding images */
+}
+
+/* ----------------------------------------------------------------
+   Font — Hanken Grotesk (Hanken Design Co., SIL OFL), self-hosted.
+   ExtraBold (800) is the shipping weight, mapped across the range so the
+   weight-900 design renders in Hanken's heaviest real cut. No faux-bold.
+   Falls back to the Helvetica stack if the font fails to load.
+   ---------------------------------------------------------------- */
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("../fonts/HankenGrotesk-ExtraBold.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Mov (Studio Feixen, licensed) — variable display face, custom axes
+   MOV1 / MOV2 (0–100) that morph the letterforms. Accent only, used for the
+   animated letter tiles; the shipping text font stays Hanken Grotesk. */
+@font-face {
+  font-family: "Mov";
+  src: url("../fonts/MovVariableVF.woff2") format("woff2");
+  font-display: swap;
+}
+
+/* ----------------------------------------------------------------
+   Reset / reboot (minimal, from Bootstrap reboot)
+   ---------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  /* Fluid root font-size — the engine of the whole type system.
+     Every rem-based size below scales smoothly from the 28px phone
+     value to the 48px desktop value, with no hard breakpoint jump.
+     ~28px below ~430px wide, ~48px above ~1140px wide, fluid between. */
+  font-size: var(--fs-root);
+  -webkit-font-smoothing: antialiased;
+  -ms-overflow-style: scrollbar;
+}
+
+body {
+  margin: 0;
+  font-family: "Hanken Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: var(--text-base);     /* $font-size-base */
+  font-weight: var(--weight-black);/* black / extra bold */
+  line-height: var(--leading-base);/* tightened for Helvetica */
+  letter-spacing: var(--tracking-base);
+  color: var(--black);
+  background: var(--white);
+  text-align: left;
+  /* No faux-bold — showing Helvetica at its real weight (900). */
+}
+
+img { vertical-align: middle; border-style: none; max-width: 100%; }
+
+a {
+  color: var(--black);            /* $link-color */
+  text-decoration: none;
+  background-color: transparent;
+}
+/* Site-wide hover: underline only, never a colour change. */
+a:hover { text-decoration: underline; text-underline-offset: .12em; }
+
+p { margin-top: 0; margin-bottom: 1rem; line-height: var(--leading-loose); }
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: .5rem;
+  font-weight: var(--weight-black);
+  line-height: var(--leading-tight);
+}
+h1 { font-size: var(--text-xl); }
+h2, h3, h4, h5, h6 { font-size: var(--text-base); }
+
+ul { margin: 0; padding: 0; list-style: none; }
+
+/* (the root font-size is now a single fluid clamp above — the old
+   28px -> 48px breakpoint jump at 768px is no longer needed) */
+
+/* ----------------------------------------------------------------
+   Display type scale (from variables.scss)
+   ---------------------------------------------------------------- */
+/* Big grotesque display type wants very tight leading + slight negative tracking */
+/* margin-left: optical hang so the big caps align with the smaller body text */
+.display-1 { font-size: var(--text-2xl); font-weight: var(--weight-black); line-height: .88; letter-spacing: var(--tracking-3); margin-left: -.04em; }
+/* About / Contact: breathing room under the big heading before the body copy. The 404 heading keeps its own centered layout (.title-offset), so it's excluded. */
+.display-1:not(.title-offset) { margin-bottom: calc(var(--gutter) * 2); }
+.display-2 { font-size: var(--text-xl);  font-weight: var(--weight-black); line-height: .94; letter-spacing: var(--tracking-2); }
+.display-3 { font-size: var(--text-xs);  font-weight: var(--weight-black); line-height: var(--leading-tight); }
+.display-4 { font-size: var(--text-2xs); font-weight: var(--weight-black); line-height: var(--leading-tight); }
+
+/* ----------------------------------------------------------------
+   Grid (Bootstrap 4 alpha: container-fluid / row / cols / push-pull)
+   ---------------------------------------------------------------- */
+.container-fluid {
+  width: 100%;
+  padding-right: var(--gutter-half);
+  padding-left: var(--gutter-half);
+  margin-right: auto;
+  margin-left: auto;
+}
+/* layout.scss override */
+body > .container-fluid {
+  padding: 0;
+  margin: var(--gutter);          /* equal margin top / right / bottom / left */
+  width: auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: calc(-1 * var(--gutter-half));
+  margin-left: calc(-1 * var(--gutter-half));
+}
+
+[class^="col-"], [class*=" col-"] {
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: var(--gutter-half);
+  padding-left: var(--gutter-half);
+}
+
+/* xs (all widths) */
+.col-12 { flex: 0 0 100%; max-width: 100%; }
+
+/* sm >= 576 */
+@media (min-width: 576px) {
+  .col-sm-6 { flex: 0 0 50%; max-width: 50%; }
+}
+
+/* md >= 768 */
+@media (min-width: 768px) {
+  .col-md-4  { flex: 0 0 33.333333%; max-width: 33.333333%; }
+  .col-md-8  { flex: 0 0 66.666667%; max-width: 66.666667%; }
+  .col-md-12 { flex: 0 0 100%; max-width: 100%; }
+  .push-md-8 { left: 66.666667%; }
+  .pull-md-4 { right: 33.333333%; }
+}
+
+/* lg >= 992 */
+@media (min-width: 992px) {
+  .col-lg-6 { flex: 0 0 50%; max-width: 50%; }
+}
+
+/* ----------------------------------------------------------------
+   Flex / display / alignment utilities (only those used)
+   ---------------------------------------------------------------- */
+.d-flex { display: flex !important; }
+.d-inline { display: inline !important; }
+.d-inline-flex { display: inline-flex !important; }
+
+.flex-last { order: 1 !important; }
+
+.align-items-center { align-items: center !important; }
+.align-items-end { align-items: flex-end !important; }
+.justify-content-between { justify-content: space-between !important; }
+
+.text-right { text-align: right !important; }
+.w-100 { width: 100% !important; }
+
+@media (min-width: 768px) {
+  .flex-md-column { flex-direction: column !important; }
+  .flex-md-first { order: -1 !important; }
+  .align-items-md-end { align-items: flex-end !important; }
+}
+
+/* ----------------------------------------------------------------
+   Spacing utilities (Bootstrap scale, $spacer = 1rem) — used subset
+   ---------------------------------------------------------------- */
+.mt-2 { margin-top: .5rem !important; }
+.mb-0 { margin-bottom: 0 !important; }
+.mb-2 { margin-bottom: .5rem !important; }
+.mr-3 { margin-right: 1rem !important; }
+.pl-0 { padding-left: 0 !important; }
+.py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }
+
+@media (min-width: 768px) {
+  .mt-md-0 { margin-top: 0 !important; }
+  .mr-md-0 { margin-right: 0 !important; }
+  .px-md-0 { padding-right: 0 !important; padding-left: 0 !important; }
+}
+
+/* ----------------------------------------------------------------
+   Visibility helpers (Bootstrap 4 alpha hidden-* — used subset)
+   ---------------------------------------------------------------- */
+@media (max-width: 767.98px) { .hidden-sm-down { display: none !important; } }
+@media (min-width: 768px)    { .hidden-md-up   { display: none !important; } }
+@media (max-width: 991.98px) { .hidden-md-down { display: none !important; } }
+
+.img-fluid { max-width: 100%; height: auto; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* ----------------------------------------------------------------
+   Helpers (helpers.scss)
+   ---------------------------------------------------------------- */
+.overflowx-hidden { overflow-x: hidden; }
+.overflow-hidden { overflow: hidden; }
+.img-mb { margin-bottom: var(--gutter); }
+.title-offset { margin-top: -0.2em; }
+.zindex-tooltip { z-index: var(--z-nav); }   /* menu sits above bleeding images */
+
+/* ----------------------------------------------------------------
+   Layout (layout.scss)
+   ---------------------------------------------------------------- */
+.is-home .main-container { overflow-x: hidden; }
+
+/* ================================================================
+   Components
+   ================================================================ */
+
+/* --- Navigation (organisms/nav) ------------------------------- */
+/* Two layouts, three breakpoints:
+   - phones (< 768): a compact horizontal bar at the top, type scaled
+     fluidly so it never overflows the narrowest screens;
+   - tablet (768–991): the grid switches to two columns, so the nav
+     becomes a fixed vertical rail in the narrow right column with
+     slightly smaller type so the name + links fit;
+   - desktop (>= 992): the column is wide enough for full-size type. */
+.side-nav {
+  display: flex;
+  min-height: var(--nav-mobile-h);   /* compact top bar on phones */
+}
+.logo { line-height: .9; letter-spacing: var(--tracking-1); white-space: nowrap; }
+
+.nav { display: flex; padding-left: 0; margin-bottom: 0; list-style: none; }
+
+/* Fluidly scale the nav type on phones: ~13px on the narrowest devices
+   up to a .8rem cap, so the bar fits on one line at any phone width. */
+.nav-item { font-size: var(--fs-nav-mobile); }
+
+/* Tablet — fixed right-hand rail; smaller type to fit the 33% column. */
+@media (min-width: 768px) {
+  .side-nav {
+    position: fixed;
+    right: var(--gutter);
+    top: var(--gutter);
+    height: calc(100vh - var(--gutter) * 2);
+    min-height: 0;
+  }
+  .nav-item { font-size: var(--text-sm); }
+  /* optical: pull the logo up by the font's cap-space so the letter tops
+     line up with the hard top edge of the images / content margin */
+  .logo { font-size: var(--text-sm); margin-top: -.13em; }
+}
+
+/* Desktop — column is wide enough for the full-size name and links. */
+@media (min-width: 992px) {
+  .nav-item { font-size: var(--text-base); }
+  .logo { font-size: var(--text-base); }
+}
+
+/* active marker on the work + about links (hover is the site-wide underline) */
+.side-nav .nav a.active { text-decoration: underline; text-underline-offset: .12em; }
+
+/* --- Mobile nav (phones < 768) — two-tier, no hamburger -------
+   Brand "ale chevey" on its own line (sharing the content's left
+   edge); the three links sit on the line below at the SAME size as
+   the brand, grouped to the left and 20px (--gutter) apart. On phones
+   the home link reads "work" (the " & notes" is dropped so the three
+   links fit on one line); it keeps the active underline on home. */
+@media (max-width: 767.98px) {
+  .side-nav {
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 14px;                /* a touch more than --gutter-half, between adjacent links */
+    row-gap: 1.5em;                  /* generous space between the brand and the links */
+    justify-content: flex-start !important;
+    margin-bottom: var(--gutter);    /* breathing room before the content below */
+  }
+  /* Row 1 — brand, full name, left edge, larger than the links.
+     order:-1 needs !important to beat the .flex-last (order:1) class. */
+  .logo { order: -1 !important; flex: 0 0 100%; margin: 0; text-align: left !important; font-size: var(--text-lg); }
+  .logo .hidden-md-up   { display: none !important; }    /* hide short "ale" */
+  .logo .hidden-sm-down { display: inline !important; }  /* show "ale chevey" */
+  /* Row 2 — links as row siblings, same size as the brand, grouped left */
+  .side-nav .nav { display: contents; }
+  .side-nav .nav-item { margin: 0 !important; font-size: var(--text-base); }  /* links at base size; beat .mr-3 */
+  /* On phones the home link stays "work" — the global .hidden-sm-down
+     rule keeps " & notes" hidden, so all three links fit one line. */
+  .side-nav .nav a { display: inline-block; padding: .1em 0; }
+}
+
+/* --- Card (molecules/card) ------------------------------------ */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  margin-bottom: var(--gutter);
+}
+.card-borderless { border: none; }
+
+.card-img-top { position: relative; }
+.card-img-top img {
+  width: 100%;
+  aspect-ratio: var(--ratio-portrait);          /* portrait */
+  object-fit: cover;
+  display: block;
+}
+
+/* --- Project tile (molecule) — colour background + a centred icon
+   (and, once Mov is wired, an animated letter). ONE component, reused on
+   the home cards and the project hero; scales by container size. Figma:
+   1800x2400 (3:4) card, icon ~52% centred. --- */
+.tile {
+  position: relative;
+  container-type: size;
+  width: 100%;
+  aspect-ratio: var(--ratio-portrait);
+  background: var(--tile-bg, var(--placeholder));
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.tile .tile__icon {                 /* beats .card-img-top img */
+  width: var(--tile-icon, 52%);
+  aspect-ratio: 1;
+  height: auto;
+}
+.tile--summer { --tile-bg: var(--tile-summer); --tile-icon: 46%; }
+.tile--meet   { --tile-bg: var(--tile-meet); }
+.tile--mail   { --tile-bg: var(--tile-mail); }
+.tile--paris  { --tile-bg: var(--tile-paris); --tile-icon: 55%; }
+.tile--wallet { --tile-bg: var(--tile-wallet); }
+.tile--pass   { --tile-bg: var(--tile-pass); }
+/* Summer camp: white icon on the blue background (card + hero). */
+.tile--summer .tile__icon,
+.hero-image--summer .hero-image-icon { filter: brightness(0) invert(1); }
+
+/* --- Mov animated letter slot — alternative to .tile__icon ----------
+   A single big Mov glyph, sized in cqmin so it scales with the tile like the
+   SVG. Loops a gentle 0→40→0 morph ALWAYS, on every device (rests at MOV1 3 to
+   match Feixen; 40 keeps the letter legible — 60–100 gets abstract). Frozen
+   under prefers-reduced-motion. --- */
+.tile__letter {
+  font-family: "Mov", "Hanken Grotesk", sans-serif;
+  font-size: var(--tile-letter, 80cqmin);
+  line-height: 1;
+  color: var(--tile-letter-color, #000);
+  font-variation-settings: "MOV1" 3, "MOV2" 0;   /* resting state matches Feixen's */
+  font-feature-settings: var(--tile-letter-feat, normal);
+  transform: translateY(-.04em);            /* optical centre of the glyph */
+  animation: mov-morph var(--mov-speed, 4s) ease-in-out infinite;   /* always-on */
+  user-select: none;
+}
+/* Opt a tile's letter into an OpenType stylistic set (alternate glyph form). */
+.tile--ss01 { --tile-letter-feat: "ss01"; }
+.tile--ss02 { --tile-letter-feat: "ss02"; }
+.tile--ss03 { --tile-letter-feat: "ss03"; }
+.tile--ss04 { --tile-letter-feat: "ss04"; }
+.tile--ss10 { --tile-letter-feat: "ss10"; }
+.tile--ss11 { --tile-letter-feat: "ss11"; }
+.tile--ss17 { --tile-letter-feat: "ss17"; }
+/* Per-tile letter colour override. */
+.tile--letter-red   { --tile-letter-color: #ff0000; }
+.tile--letter-white { --tile-letter-color: #fff; }
+@keyframes mov-morph {
+  0%   { font-variation-settings: "MOV1" 3,  "MOV2" 0; }
+  50%  { font-variation-settings: "MOV1" 40, "MOV2" 40; }
+  100% { font-variation-settings: "MOV1" 3,  "MOV2" 0; }
+}
+/* Feixen-style featured morph: full-range, cross-phase (MOV1 0↔100, MOV2 100↔0),
+   alternating, 1s, ease-in-out — matches Studio Feixen's own Mov animation.
+   Opt in with .tile--feixen (card or hero). */
+@keyframes mov-feixen {
+  from { font-variation-settings: "MOV1" 0,   "MOV2" 100; }
+  to   { font-variation-settings: "MOV1" 100, "MOV2" 0; }
+}
+.tile--feixen .tile__letter,
+.tile--feixen .hero-image-letter {
+  animation: mov-feixen 1s ease-in-out infinite alternate;
+}
+/* Continuous motion: loop ONE direction 0→100 on both axes (linear, no alternate).
+   Glyphs designed for it read MOV 0 == MOV 100, so the reset is seamless — endless
+   motion like a clock hand, never the bad in-between of a back-and-forth morph. */
+@keyframes mov-continuous {
+  from { font-variation-settings: "MOV1" 0,   "MOV2" 0; }
+  to   { font-variation-settings: "MOV1" 100, "MOV2" 100; }
+}
+.tile--continuous .tile__letter,
+.tile--continuous .hero-image-letter {
+  animation: mov-continuous var(--mov-speed, 4s) linear infinite;
+}
+/* Accessibility: freeze all Mov motion regardless of trigger. */
+@media (prefers-reduced-motion: reduce) {
+  .tile__letter { animation: none !important; transition: none !important; }
+}
+
+.card-title { font-size: var(--text-base); margin-bottom: 0; margin-top: .25rem; }
+
+.card-clickable { position: relative; }
+.card-clickable .card-link {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 100%;
+}
+.card-clickable .card-hover-shadow {
+  display: none;
+  position: absolute;
+  width: 100%; height: 100%;
+  top: 0; left: 0;
+  opacity: 0;
+  transition: opacity var(--dur-fast), box-shadow var(--dur-fast);
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .card-clickable .card-hover-shadow { display: block; }
+}
+.card-clickable:hover .card-title {
+  text-decoration: underline;
+  text-underline-offset: .12em;
+}
+
+/* --- Hero image (molecules/hero-image) ------------------------ */
+.hero-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  container-type: size;
+  width: 100%;
+  height: calc(100vh - var(--gutter) - var(--nav-mobile-h));
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: cover;
+  z-index: var(--z-base);
+  font-size: var(--text-2xl);
+}
+/* Icon above the title in the project hero (Figma layout A). Sized by the
+   hero container so it scales on phone + desktop; colour comes from the SVG. */
+.hero-image-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52cqmin;
+  aspect-ratio: 1;
+  display: block;
+  z-index: var(--z-base);   /* behind the title — superposition, both centre/centre */
+}
+/* Animated Mov letter in the hero — mirrors .hero-image-icon (absolute, centred,
+   behind the title) but renders the morphing glyph. Always-on here; reads the
+   same ss / colour tokens as the home-card letter (.tile--ssNN / .tile--letter-*). */
+.hero-image-letter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(-.04em);
+  font-family: "Mov", "Hanken Grotesk", sans-serif;
+  font-size: var(--hero-letter, 52cqmin);
+  line-height: 1;
+  color: var(--tile-letter-color, var(--black));
+  font-variation-settings: "MOV1" 3, "MOV2" 0;
+  font-feature-settings: var(--tile-letter-feat, normal);
+  z-index: var(--z-base);   /* behind the title, like the icon */
+  user-select: none;
+  animation: mov-morph var(--mov-speed, 4s) ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-image-letter { animation: none !important; }
+}
+@media (min-width: 768px) {
+  .hero-image { height: calc(100vh - var(--gutter) * 2); }
+}
+
+.hero-image-title {
+  position: relative;
+  /* Fluid hero title — one clamp replaces the old 2/3/2/4rem breakpoint
+     steps, scaling smoothly from ~56px on phones to ~176px on desktop. */
+  font-size: var(--fs-hero);
+  line-height: .92;
+  letter-spacing: var(--tracking-2);
+  z-index: var(--z-raised);
+}
+.hero-image-title-text {
+  display: block;
+  text-align: center;
+  color: var(--white);
+  text-shadow: 0 2px 24px var(--shadow);
+}
+
+.hero-image-scroll {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -.12em;               /* ~20px higher so the full arrow stays in view, just off the edge */
+  margin: 0;
+  font-size: var(--text-base);             /* match the prev/next arrows */
+  color: var(--white);
+  text-align: center;
+  z-index: var(--z-raised);
+}
+.hero-image-scroll-text {
+  display: block;
+  text-align: center;
+  position: relative;
+  top: 10px;                    /* nudged 10px down */
+}
+
+/* --- Image discover (molecules/image-discover) ---------------- */
+.image-discover-content { margin-bottom: var(--gutter); }
+.image-discover-content p { margin-bottom: 0; }
+/* small offset image (gray placeholder), like the original 700x500 */
+.image-discover-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--ratio-landscape);
+  background-color: var(--placeholder);
+}
+
+@media (min-width: 992px) {
+  .image-discover {
+    position: relative;
+    cursor: url('../svg/arrow-right.svg') 16 16, auto;   /* custom arrow cursor on the discover image */
+  }
+  .image-discover-img {
+    position: relative;
+    width: 70%;
+    top: 0; left: 30%;
+    cursor: url('../svg/arrow-right.svg') 16 16, auto;   /* arrow over the image itself */
+  }
+  .image-discover-content {
+    position: absolute;
+    bottom: var(--gutter-half);
+    width: 60%;
+    margin-bottom: 0;
+    z-index: var(--z-base);
+  }
+}
+
+/* --- Image overflow (molecules/image-overflow) ---------------- */
+/* Big images that run wider than the column and bleed toward the menu */
+.image-overflow { max-width: 100%; height: auto; }
+@media (min-width: 992px) {
+  .image-overflow { max-width: var(--bleed); }
+  /* placeholder divs need an explicit width to actually overflow */
+  .image-placeholder.image-overflow { width: var(--bleed); max-width: var(--bleed); }
+}
+
+/* --- Prev / next project navigation --------------------------- */
+.prev-next-nav {
+  display: flex;
+  flex-direction: row;
+  margin-top: calc(var(--gutter) * 6);   /* large block of space, clearly separated from the content */
+}
+.prev-next-nav a { display: inline-block; }
+.prev-next-nav .next { margin-left: auto; }   /* same row as Previous, pushed right */
+/* End-of-list state: kept in place but faded and non-clickable (first / last project). */
+.prev-next-nav .is-disabled { opacity: 0.35; pointer-events: none; }
+
+/* ----------------------------------------------------------------
+   Contact page — simple list of links at body size
+   ---------------------------------------------------------------- */
+.contact-list { list-style: none; margin: 0; padding: 0; }
+.contact-list li { margin-bottom: .15em; }
+.contact-list .ext { display: inline-block; }   /* diagonal "opens externally" arrow */
+
+/* ----------------------------------------------------------------
+   Case-study template — flat layout: one type size, left-aligned,
+   big images. Section markers are just body-size text with spacing.
+   ---------------------------------------------------------------- */
+.section-label { margin-top: 1.2rem; margin-bottom: .3rem; }
+
+/* Contribution list on project pages — markerless, lightly spaced. */
+.work-list li { margin-bottom: .4em; }
+/* Links list follows the contributions with a section-sized gap but no
+   heading (only fires on project pages, where it follows .work-list). */
+.work-list + .contact-list { margin-top: 1.2rem; }
+
+/* ----------------------------------------------------------------
+   Image placeholders — plain dark gray blocks, nothing else.
+   ---------------------------------------------------------------- */
+.image-placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--ratio-portrait);                /* portrait */
+  background-color: var(--placeholder);
+}
+.image-placeholder > span { display: none; }   /* no label, nothing else */
+/* Card thumbnail placeholder — portrait, like the case-study images */
+.image-placeholder--card { aspect-ratio: var(--ratio-portrait); height: auto; }
+
+/* Hero placeholder: plain dark gray; project title stays legible in white */
+.hero-image--ph { background-color: var(--placeholder); }
+.hero-image--ph .hero-image-title-text { color: var(--black); text-shadow: none; }
+.hero-image--ph .hero-image-scroll { color: var(--black); }
+
+/* --- Coloured project hero — the card colour fills the original
+   full-height hero; the big title + scroll arrow are preserved. --- */
+.hero-image--summer { background-color: var(--tile-summer); }
+.hero-image--meet   { background-color: var(--tile-meet); }
+.hero-image--mail   { background-color: var(--tile-mail); }
+.hero-image--paris  { background-color: var(--tile-paris); }
+.hero-image--wallet { background-color: var(--tile-wallet); }
+.hero-image--pass   { background-color: var(--tile-pass); }
+/* Title + scroll arrow are always black on every coloured hero. */
+.hero-image[class*="hero-image--"] .hero-image-title-text { color: var(--black); text-shadow: none; }
+.hero-image[class*="hero-image--"] .hero-image-scroll { color: var(--black); }
