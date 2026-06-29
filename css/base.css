@@ -409,9 +409,6 @@ body > .container-fluid {
 .tile--paris  { --tile-bg: var(--tile-paris); --tile-icon: 55%; }
 .tile--wallet { --tile-bg: var(--tile-wallet); }
 .tile--pass   { --tile-bg: var(--tile-pass); }
-/* Summer camp: white icon on the blue background (card + hero). */
-.tile--summer .tile__icon,
-.hero-image--summer .hero-image-icon { filter: brightness(0) invert(1); }
 
 /* --- Mov animated letter slot — alternative to .tile__icon ----------
    A single big Mov glyph, sized in cqmin so it scales with the tile like the
