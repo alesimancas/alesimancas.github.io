@@ -437,6 +437,7 @@ body > .container-fluid {
 .tile--ss10 { --tile-letter-feat: "ss10"; }
 .tile--ss11 { --tile-letter-feat: "ss11"; }
 .tile--ss17 { --tile-letter-feat: "ss17"; }
+.tile--ss20 { --tile-letter-feat: "ss20"; }
 /* Per-tile letter colour override. */
 .tile--letter-red   { --tile-letter-color: #ff0000; }
 .tile--letter-white { --tile-letter-color: #fff; }
@@ -520,7 +521,7 @@ body > .container-fluid {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 52cqmin;
+  width: 40cqmin;           /* smaller than the home tile icon — sits closer to the hero letters */
   aspect-ratio: 1;
   display: block;
   z-index: var(--z-base);   /* behind the title — superposition, both centre/centre */
