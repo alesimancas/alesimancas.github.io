@@ -36,7 +36,7 @@
   --fs-root: clamp(22px, 3.25vw + 11px, 48px); /* engine: drives every rem-based size (smaller floor on phones) */
   --fs-hero: clamp(56px, 12vw, 176px);         /* case-study hero title */
   --fs-nav-mobile: clamp(13px, 4.4vw, 22px);   /* nav links + logo on phones */
-  --fs-display-1: clamp(72px, 14.6vw + 25px, 192px); /* big heading (about/contact/404): shrinks on small phones */
+  --fs-display-1: clamp(88px, 14vw + 44px, 192px);   /* big heading (about/contact/404) — sized up on phones */
 
   /* — Type scale — rem, so each step tracks the fluid --fs-root.
      px ranges are phone (root 28px) → desktop (root 48px). */
@@ -339,35 +339,33 @@ body > .container-fluid {
 /* active marker on the work + about links (hover is the site-wide underline) */
 .side-nav .nav a.active { text-decoration: underline; text-underline-offset: .12em; }
 
-/* --- Mobile nav (phones < 768) — two-tier, no hamburger -------
-   Brand "ale chevey" on its own line (sharing the content's left
-   edge); the three links sit on the line below at the SAME size as
-   the brand, grouped to the left and 20px (--gutter) apart. On phones
-   the home link reads "work" (the " & notes" is dropped so the three
-   links fit on one line); it keeps the active underline on home. */
+/* --- Mobile nav (phones < 768) — no hamburger ----------------
+   Brand "ale chevey" pulled to the left; the three links (work & stuff
+   / about / contact) stacked one under the other on the right, all at
+   the same size. Keeps the active underline on the current page. */
 @media (max-width: 767.98px) {
+  /* Brand pulled to the left; the three links (work & stuff / about /
+     contact) stacked on the right, with comfortable tap spacing. */
   .side-nav {
-    flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: 14px;                /* a touch more than --gutter-half, between adjacent links */
-    row-gap: 1.5em;                  /* generous space between the brand and the links */
+    flex-direction: column;
+    align-items: flex-end !important; /* links to the right — beat .align-items-center */
+    row-gap: .45em;                  /* more space between the stacked links (easier to tap) */
     justify-content: flex-start !important;
+    text-align: right;
     margin-bottom: var(--gutter);    /* breathing room before the content below */
   }
-  /* Row 1 — brand, full name, left edge, larger than the links.
+  /* Brand to the LEFT, same size as the links.
      order:-1 needs !important to beat the .flex-last (order:1) class. */
-  .logo { order: -1 !important; flex: 0 0 100%; margin: 0; text-align: left !important; font-size: var(--text-lg); }
+  .logo { order: -1 !important; align-self: flex-start; margin: 0 0 .45em 0; text-align: left !important; font-size: var(--text-base); }
   .logo .hidden-md-up   { display: none !important; }    /* hide short "ale" */
   .logo .hidden-sm-down { display: inline !important; }  /* show "ale chevey" */
-  /* Row 2 — links as row siblings, grouped left. Fluid size (smaller than
-     the brand) so the full "work & stuff  about  contact" stays on one
-     line down to ~360px, keeping the brand the largest element. */
+  /* Links stacked on the right, at full body size for legibility + tap. */
   .side-nav .nav { display: contents; }
-  .side-nav .nav-item { margin: 0 !important; font-size: clamp(16px, 5.4vw, 28px); }  /* beat .mr-3 */
+  .side-nav .nav-item { margin: 0 !important; font-size: var(--text-base); }  /* beat .mr-3 */
   /* Show the full "work & stuff" on phones too — un-hide the " & stuff"
      span the global .hidden-sm-down rule would otherwise hide. */
   .side-nav .nav a .hidden-sm-down { display: inline !important; }
-  .side-nav .nav a { display: inline-block; padding: .1em 0; }
+  .side-nav .nav a { display: inline-block; padding: .35em 0; }  /* bigger tap target */
 }
 
 /* --- Card (molecules/card) ------------------------------------ */
