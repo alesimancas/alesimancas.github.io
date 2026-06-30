@@ -17,12 +17,12 @@
   --shadow: rgba(0, 0, 0, .35);  /* hero title text-shadow */
 
   /* — Project tile colours (from the Figma card set) — */
-  --tile-summer: #00b478;  /* green */
+  --tile-summer: #1100ff;  /* blue */
   --tile-meet:   #ff9bd7;  /* pink */
   --tile-mail:   #9b47ff;
   --tile-paris:  #ffd700;
   --tile-wallet: #ff0000;  /* red */
-  --tile-pass:   #4141ff;  /* blue */
+  --tile-pass:   #00b478;  /* green */
 
   /* — Layout & space — */
   --gutter: 20px;          /* $grid-gutter-width-base */
