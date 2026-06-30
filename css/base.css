@@ -358,11 +358,14 @@ body > .container-fluid {
   .logo { order: -1 !important; flex: 0 0 100%; margin: 0; text-align: left !important; font-size: var(--text-lg); }
   .logo .hidden-md-up   { display: none !important; }    /* hide short "ale" */
   .logo .hidden-sm-down { display: inline !important; }  /* show "ale chevey" */
-  /* Row 2 — links as row siblings, same size as the brand, grouped left */
+  /* Row 2 — links as row siblings, grouped left. Fluid size (smaller than
+     the brand) so the full "work & stuff  about  contact" stays on one
+     line down to ~360px, keeping the brand the largest element. */
   .side-nav .nav { display: contents; }
-  .side-nav .nav-item { margin: 0 !important; font-size: var(--text-base); }  /* links at base size; beat .mr-3 */
-  /* On phones the home link stays "work" — the global .hidden-sm-down
-     rule keeps " & notes" hidden, so all three links fit one line. */
+  .side-nav .nav-item { margin: 0 !important; font-size: clamp(16px, 5.4vw, 28px); }  /* beat .mr-3 */
+  /* Show the full "work & stuff" on phones too — un-hide the " & stuff"
+     span the global .hidden-sm-down rule would otherwise hide. */
+  .side-nav .nav a .hidden-sm-down { display: inline !important; }
   .side-nav .nav a { display: inline-block; padding: .1em 0; }
 }
 
@@ -504,7 +507,7 @@ body > .container-fluid {
   position: relative;
   container-type: size;
   width: 100%;
-  height: calc(100vh - var(--gutter) - var(--nav-mobile-h));
+  aspect-ratio: 1 / 1;             /* phones: compact square hero (full-height on tablet+) */
   background-repeat: no-repeat;
   background-position: 50%;
   background-size: cover;
@@ -545,7 +548,7 @@ body > .container-fluid {
   .hero-image-letter { animation: none !important; }
 }
 @media (min-width: 768px) {
-  .hero-image { height: calc(100vh - var(--gutter) * 2); }
+  .hero-image { aspect-ratio: auto; height: calc(100vh - var(--gutter) * 2); }
 }
 
 .hero-image-title {
@@ -579,6 +582,10 @@ body > .container-fluid {
   text-align: center;
   position: relative;
   top: 10px;                    /* nudged 10px down */
+}
+/* Phones: the hero is a compact square now, so the scroll cue is unneeded. */
+@media (max-width: 767.98px) {
+  .hero-image-scroll { display: none; }
 }
 
 /* --- Image discover (molecules/image-discover) ---------------- */
