@@ -33,9 +33,10 @@
   /* — Fluid type — every responsive clamp lives here, nowhere else.
      Each is min / preferred (viewport-based) / max. To retune the whole
      site's scale edit --fs-root; the rest are bespoke display sizes. */
-  --fs-root: clamp(28px, 2.8vw + 16px, 48px);  /* engine: drives every rem-based size */
+  --fs-root: clamp(22px, 3.25vw + 11px, 48px); /* engine: drives every rem-based size (smaller floor on phones) */
   --fs-hero: clamp(56px, 12vw, 176px);         /* case-study hero title */
   --fs-nav-mobile: clamp(13px, 4.4vw, 22px);   /* nav links + logo on phones */
+  --fs-display-1: clamp(72px, 14.6vw + 25px, 192px); /* big heading (about/contact/404): shrinks on small phones */
 
   /* — Type scale — rem, so each step tracks the fluid --fs-root.
      px ranges are phone (root 28px) → desktop (root 48px). */
@@ -159,7 +160,7 @@ ul { margin: 0; padding: 0; list-style: none; }
    ---------------------------------------------------------------- */
 /* Big grotesque display type wants very tight leading + slight negative tracking */
 /* margin-left: optical hang so the big caps align with the smaller body text */
-.display-1 { font-size: var(--text-2xl); font-weight: var(--weight-black); line-height: .88; letter-spacing: var(--tracking-3); margin-left: -.04em; }
+.display-1 { font-size: var(--fs-display-1); font-weight: var(--weight-black); line-height: .88; letter-spacing: var(--tracking-3); margin-left: -.04em; }
 /* About / Contact: breathing room under the big heading before the body copy. The 404 heading keeps its own centered layout (.title-offset), so it's excluded. */
 .display-1:not(.title-offset) { margin-bottom: calc(var(--gutter) * 2); }
 .display-2 { font-size: var(--text-xl);  font-weight: var(--weight-black); line-height: .94; letter-spacing: var(--tracking-2); }
