@@ -1,9 +1,7 @@
 @charset "utf-8";
 /* =================================================================
    Alejandra Chevey — portfolio
-   Static rebuild (plain HTML + CSS, no JS / animations / VR).
-   Reconstructed from the original Hugo + Toolbox (Bootstrap 4 alpha)
-   source. Colours, grid, type scale and component layout preserved.
+   Plain static HTML + CSS. Type scale, grid and components in one file.
    ================================================================= */
 
 /* ----------------------------------------------------------------
@@ -40,11 +38,8 @@
 
   /* — Type scale — rem, so each step tracks the fluid --fs-root.
      px ranges are phone (root 28px) → desktop (root 48px). */
-  --text-2xs:  .5rem;    /* 14 → 24px */
-  --text-xs:   .7rem;    /* 19.6 → 33.6px */
   --text-sm:   .8rem;    /* 22.4 → 38.4px — nav/logo, tablet */
   --text-base: 1rem;     /* 28 → 48px — body default */
-  --text-lg:   1.3rem;   /* 36.4 → 62.4px — mobile brand */
   --text-xl:   2rem;     /* 56 → 96px */
   --text-2xl:  4rem;     /* 112 → 192px */
 
@@ -60,7 +55,7 @@
      text; the numbered ones go tighter on bigger display type. */
   --tracking-base: -.02em; /* body, paragraphs, nav, cards, headings */
   --tracking-1: -.01em;  /* logo */
-  --tracking-2: -.03em;  /* display-2 + hero title */
+  --tracking-2: -.03em;  /* hero title */
   --tracking-3: -.035em; /* display-1 */
 
   /* — Ratios — */
@@ -69,8 +64,7 @@
 
   /* — Motion — */
   --dur-fast: .3s;   /* card hover-shadow fade */
-  --mov-speed: 4s;       /* Mov letter morph loop (plays while hovered) */
-  --mov-ease-back: .6s;  /* Mov letter ease back to rest after hover */
+  --mov-speed: 4s;       /* Mov letter morph loop (always-on) */
 
   /* — Elevation (z-index scale) — */
   --z-base: 1;      /* hero image / discover content */
@@ -163,9 +157,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 .display-1 { font-size: var(--fs-display-1); font-weight: var(--weight-black); line-height: .88; letter-spacing: var(--tracking-3); margin-left: -.04em; }
 /* About / Contact: breathing room under the big heading before the body copy. The 404 heading keeps its own centered layout (.title-offset), so it's excluded. */
 .display-1:not(.title-offset) { margin-bottom: calc(var(--gutter) * 2); }
-.display-2 { font-size: var(--text-xl);  font-weight: var(--weight-black); line-height: .94; letter-spacing: var(--tracking-2); }
-.display-3 { font-size: var(--text-xs);  font-weight: var(--weight-black); line-height: var(--leading-tight); }
-.display-4 { font-size: var(--text-2xs); font-weight: var(--weight-black); line-height: var(--leading-tight); }
 
 /* ----------------------------------------------------------------
    Grid (Bootstrap 4 alpha: container-fluid / row / cols / push-pull)
@@ -265,8 +256,6 @@ body > .container-fluid {
 @media (max-width: 767.98px) { .hidden-sm-down { display: none !important; } }
 @media (min-width: 768px)    { .hidden-md-up   { display: none !important; } }
 @media (max-width: 991.98px) { .hidden-md-down { display: none !important; } }
-
-.img-fluid { max-width: 100%; height: auto; }
 
 .sr-only {
   position: absolute;
@@ -472,7 +461,21 @@ body > .container-fluid {
   .tile__letter { animation: none !important; transition: none !important; }
 }
 
-.card-title { font-size: var(--text-base); margin-bottom: 0; margin-top: .25rem; }
+/* One line only: if the title (or date + title on hover) is too wide,
+   truncate with an ellipsis instead of wrapping to two lines. */
+.card-title {
+  font-size: var(--text-base);
+  margin-bottom: 0;
+  margin-top: .25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Last-updated date, hidden until hover, sits before the title with a
+   middot separator: "21.08.26 · Title". */
+.card-date { display: none; }
+.card-clickable:hover .card-date { display: inline; }
 
 .card-clickable { position: relative; }
 .card-clickable .card-link {
@@ -651,12 +654,6 @@ body > .container-fluid {
    ---------------------------------------------------------------- */
 .section-label { margin-top: 1.2rem; margin-bottom: .3rem; }
 
-/* Contribution list on project pages — markerless, lightly spaced. */
-.work-list li { margin-bottom: .4em; }
-/* Links list follows the contributions with a section-sized gap but no
-   heading (only fires on project pages, where it follows .work-list). */
-.work-list + .contact-list { margin-top: 1.2rem; }
-
 /* ----------------------------------------------------------------
    Image placeholders — plain dark gray blocks, nothing else.
    ---------------------------------------------------------------- */
@@ -667,8 +664,6 @@ body > .container-fluid {
   background-color: var(--placeholder);
 }
 .image-placeholder > span { display: none; }   /* no label, nothing else */
-/* Card thumbnail placeholder — portrait, like the case-study images */
-.image-placeholder--card { aspect-ratio: var(--ratio-portrait); height: auto; }
 
 /* Hero placeholder: plain dark gray; project title stays legible in white */
 .hero-image--ph { background-color: var(--placeholder); }
