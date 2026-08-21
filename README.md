@@ -26,6 +26,32 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
+## Deploy / publishing changes
+
+This repo **is** the live site. It's a GitHub Pages user site: the repo
+`alesimancas/alesimancas.github.io` publishes from the `main` branch, and the
+`CNAME` file points it at the custom domain **alejandra.tech** (HTTPS via
+GitHub's managed certificate).
+
+There's no build step — whatever HTML/CSS is on `main` is what goes live.
+Publishing a change = commit and push to `main`; Pages rebuilds automatically,
+usually within a minute or two:
+
+```bash
+git add -A
+git commit -m "Describe the change"
+git push origin main
+```
+
+Or in GitHub Desktop: review the change, commit to `main`, then **Push origin**.
+
+Notes:
+
+- Don't delete the `CNAME` file — it binds the site to alejandra.tech. Removing
+  it drops the custom domain and can force GitHub to re-issue the SSL cert.
+- If the live site ever stops updating, check the source under repo
+  **Settings → Pages** (should be: Deploy from branch → `main`, root folder).
+
 ## Fonts
 
 Hanken Grotesk ships under the SIL Open Font License. **Mov is a commercial
